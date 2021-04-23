@@ -1,13 +1,5 @@
 <architecture>
   <models>
-    <model name="io" never_prune="true">
-      <input_ports>
-        <port name="outpad"/>
-      </input_ports>
-      <output_ports>
-        <port name="inpad"/>
-      </output_ports>
-    </model>
     <model name="adder_lut4" never_prune="true">
       <input_ports>
         <port name="in" combinational_sink_ports="lut4_out cout"/>
@@ -487,12 +479,30 @@
               <meta name="fasm_params">QL_IOFF_QL_CCFF_mem.mem_out = MODE</meta>
             </metadata>
           </pb_type>
-          <pb_type name="pad" blif_model=".subckt io" num_pb="1">
+          <pb_type name="pad" num_pb="1">
             <input name="outpad" num_pins="1"/>
             <output name="inpad" num_pins="1"/>
+            <mode name="inpad">
+              <pb_type name="inpad" blif_model=".input" num_pb="1">
+                <output name="inpad" num_pins="1"/>
+              </pb_type>
+              <interconnect>
+                <direct name="inpad_blif_to_inpad_pad" input="inpad.inpad" output="pad.inpad"/>
+              </interconnect>
+              <metadata>
+                <meta name="fasm_features">IO_QL_CCFF_mem.mem_out</meta>
+              </metadata>
+            </mode>
+            <mode name="outpad">
+              <pb_type name="outpad" blif_model=".output" num_pb="1">
+                <input name="outpad" num_pins="1"/>
+              </pb_type>
+              <interconnect>
+                <direct name="outpad_blif_to_outpad_pad" output="outpad.outpad" input="pad.outpad"/>
+              </interconnect>
+            </mode>
             <metadata>
               <meta name="fasm_prefix">logical_tile_io_mode_physical__iopad_mode_default__pad_0</meta>
-              <meta name="fasm_params">IO_QL_CCFF_mem.mem_out = MODE</meta>
             </metadata>
           </pb_type>
           <interconnect>
